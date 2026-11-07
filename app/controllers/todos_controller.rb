@@ -2,8 +2,7 @@ class TodosController < ApplicationController
   before_action :set_todo, only: %i[show update destroy]
 
   def index
-    @todos = Todo.all
-    render json: @todos
+    render json: Todo.order(:id)
   end
 
   def show
@@ -13,9 +12,9 @@ class TodosController < ApplicationController
   def create
     @todo = Todo.new(todo_params)
     if @todo.save
-      render json: @todo, status: :created, location: @todo
+      render json: @todo, status: :created
     else
-      render json: @todo.errors, status: :unprocessable_content
+      render json: { error: @todo.errors.full_messages.to_sentence }, status: :bad_request
     end
   end
 
@@ -23,12 +22,13 @@ class TodosController < ApplicationController
     if @todo.update(todo_params)
       render json: @todo
     else
-      render json: @todo.errors, status: :unprocessable_content
+      render json: { error: @todo.errors.full_messages.to_sentence }, status: :bad_request
     end
   end
 
   def destroy
     @todo.destroy!
+    head :no_content
   end
 
   private
