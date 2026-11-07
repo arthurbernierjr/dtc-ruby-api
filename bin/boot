@@ -1,0 +1,5 @@
+#!/bin/bash
+cd /app || exit 1
+echo BOOT
+bundle exec ruby bin/rails db:prepare
+exec bundle exec ruby bin/rails server -b 0.0.0.0 -p 8080
